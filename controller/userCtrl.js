@@ -1,10 +1,13 @@
 import User from "../model/User.js";
 import bcrypt from "bcrypt";
 import asyncHandler from "express-async-handler";
+import generateToken from "../utils/generateToken.js";
+import { getTokenFromHeader } from "../utils/getTokenFromHeader.js";
+import { VerifyToken } from "../utils/verifyToken.js";
 
 // @desc  --- Register User
 // @route---- POST/api/v1/users/register
-// access Private/admin
+// access Public
 
 // Registration Controller
 export const registerUserCtrl = asyncHandler(async (req, res, next) => {
@@ -52,12 +55,42 @@ export const loginUserCtrl = asyncHandler(async (req, res, next) => {
             res.status(200).json({
                 success: true,
                 message: "Login Successfully",
-                userFound
+                userFound,
+                token: generateToken(userFound?._id) 
             });
         } else {
             throw new Error("Invalid login credential");
         }
     } catch (err) {
-        next(new Error(err.message));
+        // Ensure that the argument passed to `throw new Error` is a plain object
+        const errorObject = {
+            message: err.message,
+            stack: err.stack
+        };
+        throw new Error(JSON.stringify(errorObject));
     }
 });
+
+//@desc Get user Profile
+// route get /profile,
+// acess Priavate...
+
+export const getUserProfileCtrl= asyncHandler(async (req,res)=>
+{// Assuming getTokenFromHeader is a function that accepts req as an argument
+
+    
+    const token = getTokenFromHeader(req);
+
+// Verify The token
+const verified = VerifyToken(token);
+console.log(verified);
+
+
+res.status(200).json({
+    status: true,
+    message: "Hello, this is your profile"
+})
+
+}
+);
+
