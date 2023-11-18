@@ -1,1 +1,5 @@
-Admin
+Authentication is done by json web Token ...
+
+Authentication simply means simply allowing  by matching the password and id..
+
+flow of token webtoken.
