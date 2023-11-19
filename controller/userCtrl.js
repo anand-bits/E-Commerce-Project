@@ -75,21 +75,16 @@ export const loginUserCtrl = asyncHandler(async (req, res, next) => {
 // route get /profile,
 // acess Priavate...
 
-export const getUserProfileCtrl= asyncHandler(async (req,res)=>
+export const getUserProfileCtrl= asyncHandler(async (req,res,next)=>
 {// Assuming getTokenFromHeader is a function that accepts req as an argument
 
-    
-    const token = getTokenFromHeader(req);
-
-// Verify The token
-const verified = VerifyToken(token);
-console.log(verified);
-
-
+ 
+console.log(req);
 res.status(200).json({
     status: true,
     message: "Hello, this is your profile"
 })
+
 
 }
 );
