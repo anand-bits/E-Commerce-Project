@@ -157,9 +157,9 @@ export const getProductCtrl = asyncHandler(async (req, res) => {
 });
 
 
-// @desc Get Single Product
+// @desc Update  Product by Product Id
 // @route put  /api/v1/products/:id
-// @access Public
+// @access Private /admin
 export const updateProductCtrl = asyncHandler(async (req, res) => {
     try {
         const { name, description, category, sizes, colors, user, price, totalQty, brand } = req.body;
@@ -183,3 +183,20 @@ export const updateProductCtrl = asyncHandler(async (req, res) => {
         next(error); // Pass the error to the next middleware or error handler
     }
 });
+
+
+
+// @desc Delete  Product
+// @route Delete  /api/v1/products/:id
+// @access Private /admin
+
+export const deleteProductCtrl= asyncHandler(async(req,res)=>
+{
+    const product= await Product.findByIdAndDelete(req.params.id)
+    
+    res.json({
+        success: true,
+        message: "Product Deleted  successfully",
+        product
+    });
+})
