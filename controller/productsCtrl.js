@@ -73,7 +73,21 @@ if(req.query.category)
 
 }
 
+// Filter By price Range --------------->
 
+if(req.query.price)
+{
+    const priceRange= req.query.price.split("-");
+    // gte:- Greater or Equal to
+    //lte:- less than or Equal to
+
+    productQuery=productQuery.find({
+        price:{$gte:priceRange[0], $lte:priceRange[1]},
+
+    })
+
+
+}
 
     const product= await productQuery;
 
