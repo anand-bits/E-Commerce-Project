@@ -51,6 +51,29 @@ export const getProductCtrl= asyncHandler(async(req,res)=>
 
 
     }
+// Product By brand 
+
+if(req.query.brand)
+{
+    productQuery=productQuery.find({brand:{
+        $regex:req.query.brand, $options:"i"
+    }});
+
+
+}
+
+// Filter By category 
+
+if(req.query.category)
+{
+    productQuery=productQuery.find({category:{
+        $regex:req.query.category, $options:"i"
+    }});
+
+
+}
+
+
 
     const product= await productQuery;
 
