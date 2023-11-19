@@ -106,6 +106,27 @@ productQuery= productQuery.skip(startIndex).limit(limit);
 
 
 
+// Pagination Result -----------
+
+const pagination={
+
+};
+if(endIndex<total)
+{
+    pagination.next={
+        page:page+1,
+        limit,
+    };
+
+}
+if(startIndex>0)
+{
+    pagination.prev={
+        page:page-1,
+        limit
+
+    }
+}
 
 
     const product= await productQuery;
@@ -114,6 +135,9 @@ productQuery= productQuery.skip(startIndex).limit(limit);
     res.json({
 
         success:true,
+        results:product.length,
+        pagination,
+        message:'Products Fetched',
         product
 
     })
