@@ -52,40 +52,38 @@ export const loginUserCtrl = asyncHandler(async (req, res, next) => {
 
         // Compare passwords
         if (userFound && (await bcrypt.compare(password, userFound?.password))) {
+            const token = generateToken(userFound?._id);
+
+            // Set the token as a cookie
+            res.cookie('token', token, { httpOnly: true, maxAge: 3 * 24 * 60 * 60 * 1000 });
+
             res.status(200).json({
                 success: true,
                 message: "Login Successfully",
                 userFound,
-                token: generateToken(userFound?._id) 
+                token
             });
         } else {
             throw new Error("Invalid login credential");
         }
     } catch (err) {
-        // Ensure that the argument passed to `throw new Error` is a plain object
-        const errorObject = {
-            message: err.message,
-            stack: err.stack
-        };
-        throw new Error(JSON.stringify(errorObject));
+        // Handle errors
+        next(err);
     }
 });
 
-//@desc Get user Profile
-// route get /profile,
-// acess Priavate...
 
-export const getUserProfileCtrl= asyncHandler(async (req,res,next)=>
-{// Assuming getTokenFromHeader is a function that accepts req as an argument
-
- 
-console.log(req);
-res.status(200).json({
-    status: true,
-    message: "Hello, this is your profile"
-})
-
-
-}
-);
+/// @desc    Get user profile
+// @route   GET /api/v1/users/profile
+// @access  Private
+export const getUserProfileCtrl = asyncHandler(async (req, res) => {
+    //find the user
+    const user = await User.findById(req.userAuthId);
+    res.json({
+      status: "success",
+      message: "User profile fetched successfully",
+      user,
+    });
+  });
+  
 

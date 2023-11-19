@@ -4,17 +4,18 @@ import { VerifyToken } from "../utils/verifyToken.js";
 export const isLoggedIn = async (req, res, next) => {
     try {
         const token = getTokenFromHeader(req);
-        const decodedUser = await VerifyToken(token);
+        const decodedUser =  VerifyToken(token);
 
         if (!decodedUser) {
             throw new Error("Invalid/Expired Token, please login again");
         }
+        else{
+        req.userAuthId = decodedUser?.id;
+        
 
-        req.userAuthId = decodedUser.id;
-        console.log(decodedUser);
-
-        next();
-    } catch (error) {
+        next()}
+    } 
+    catch (error) {
         next(error); // Pass the error to the next middleware or error handler
     }
 };
