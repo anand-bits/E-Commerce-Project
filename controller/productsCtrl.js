@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import Product from "../model/Product.js";
+import Category from "../model/Category.js";
 
 // @desc Create new Product
 // @route POST /api/v1/products/createproduct
@@ -17,6 +18,15 @@ export const createProductCtrl = asyncHandler(async (req, res, next) => {
                 message: "Product already exists"
             });
         }
+        // find the Category Of Product means Category of product means like its category of men and wqmen 
+        const categoryFound= await Category.findOne({
+            name:category,
+        })
+        if(!categoryFound)
+        {
+            throw new Error("Category Not found , please Create Category First or check Category Name")
+        }
+
 
         // Create Product
         const product = await Product.create({
@@ -30,6 +40,9 @@ export const createProductCtrl = asyncHandler(async (req, res, next) => {
             totalQty,
             brand
         });
+        categoryFound.products.push(product._id);
+
+        await categoryFound.save()
 
         // Respond with 201 Created
         res.status(201).json({
