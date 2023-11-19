@@ -6,6 +6,6 @@ import { isLoggedIn } from "../middleware/isLoggedIn.js";
 const productRoutes= Router()
 
 productRoutes.post("/createproduct", isLoggedIn,createProductCtrl)
-productRoutes.get("/getproduct",isLoggedIn,getProductCtrl);
+productRoutes.get("/getproduct",getProductCtrl);
 
 export default productRoutes;

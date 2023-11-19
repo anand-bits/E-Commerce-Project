@@ -142,6 +142,13 @@ if(startIndex>0)
 
     })
 
-})
+});
+
+
+// Get Single Product 
+// @route products/:id
+// acesss Public
+
+
 
 
