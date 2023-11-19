@@ -88,6 +88,25 @@ if(req.query.price)
 
 
 }
+// Pagination
+//Page
+const page= parseInt(req.query.page)? parseInt(req.query.page):1;
+
+const limit=parseInt(req.query.limit)? parseInt(req.query.limit):10;
+
+//start Index
+const startIndex=(page-1)*limit;
+// endIdx
+const endIndex= page *limit;
+// const total
+const total= await Product.countDocuments();
+
+productQuery= productQuery.skip(startIndex).limit(limit);
+
+
+
+
+
 
     const product= await productQuery;
 
