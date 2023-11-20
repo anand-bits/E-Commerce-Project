@@ -154,7 +154,7 @@ export const getProductsCtrl = asyncHandler(async (req, res) => {
             };
         }
 
-        const product = await productQuery;
+        const product = await productQuery.populate("reviews");
 
         res.json({
             success: true,
@@ -175,7 +175,7 @@ export const getProductsCtrl = asyncHandler(async (req, res) => {
 export const getProductCtrl = asyncHandler(async (req, res) => {
     try {
         const { id } = req.params;
-        const product = await Product.findById(id);
+        const product = await Product.findById(id).populate("reviews");
 
         if(!product)
         {
