@@ -1,13 +1,14 @@
 import asyncHandler from "express-async-handler";
 import Product from "../model/Product.js";
 import Category from "../model/Category.js";
+import Brand from "../model/Brands.js";
 
 // @desc Create new Product
 // @route POST /api/v1/products/createproduct
 // @access Private/Admin
 export const createProductCtrl = asyncHandler(async (req, res, next) => {
     try {
-        const { name, description, category, sizes, colors, user, price, totalQty, brand } = req.body;
+        const { name, description, category, sizes, colors, price, totalQty, brand } = req.body;
 
         // Product Existence Check
         const productExist = await Product.findOne({ name });
@@ -28,6 +29,18 @@ export const createProductCtrl = asyncHandler(async (req, res, next) => {
         }
 
 
+           
+           // find the Brand  Of Product, means Brand of product means like its Brand Nike ,puma 
+           const brandFound= await Brand .findOne({
+               name:brand.toLowerCase()
+           })
+           if(!brandFound)
+           {
+               throw new Error("Brand  Not found , please Create Brand  First or check Brand Name")
+           }
+   
+
+
         // Create Product
         const product = await Product.create({
             name,
@@ -40,9 +53,19 @@ export const createProductCtrl = asyncHandler(async (req, res, next) => {
             totalQty,
             brand
         });
+
+        // Pushing the product id into category.
+        // this will help for this men category have these brand ....
+
         categoryFound.products.push(product._id);
 
         await categoryFound.save()
+
+        // Pushing the product id into Brand schema 
+        // this will help to knw this brand product is available.
+
+        brandFound.products.push(product._id)
+        await brandFound.save();
 
         // Respond with 201 Created
         res.status(201).json({
