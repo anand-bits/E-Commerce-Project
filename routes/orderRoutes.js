@@ -6,3 +6,6 @@ import { createOrderCtrl } from "../controller/orderCtrl.js";
 const orderRouter= Router();
 
 orderRouter.post("/",isLoggedIn,createOrderCtrl)
+
+
+export default orderRouter;
