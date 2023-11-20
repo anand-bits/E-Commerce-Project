@@ -20,5 +20,10 @@ if with the toke , user is admin, if the user which have admin token will be tak
 and user referred is used to keep tracking for order 
 
 
+-----------------------------------
+
+Order placement ------>
+
+
 
 
