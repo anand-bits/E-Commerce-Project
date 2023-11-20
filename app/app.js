@@ -3,6 +3,7 @@ import userRoutes from "../routes/userRoutes.js";
 import { globalErrHandler, notFound } from "../middleware/globalErrHandler.js";
 import productRoutes from "../routes/productRoutes.js";
 import categoryRouter from "../routes/categorieRoutes.js";
+import brandsRouter from "../routes/brandRoutes.js";
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(express.json());
 app.use('/api/v1/user', userRoutes);
 app.use('/api/v1/product', productRoutes);
 app.use('/api/v1/category',categoryRouter)
+app.use('/api/v1/brand',brandsRouter)
 
 // middleware
 app.use(notFound);

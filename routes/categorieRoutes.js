@@ -7,8 +7,8 @@ const categoriesRouter=Router();
 categoriesRouter.post("/createcategory",isLoggedIn,createCategoryCtrl);
 categoriesRouter.get("/", getAllCategoriesCtrl);
 categoriesRouter.get("/:id", getSingleCategoryCtrl);
-categoriesRouter.put("/:id", updateCategoryCtrl)
-categoriesRouter.delete("/:id", deleteCategoryCtrl);
+categoriesRouter.put("/:id",isLoggedIn, updateCategoryCtrl)
+categoriesRouter.delete("/:id",isLoggedIn, deleteCategoryCtrl);
 ;
 
 

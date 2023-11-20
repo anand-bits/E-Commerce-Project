@@ -12,4 +12,13 @@ if with the toke , user is admin, if the user which have admin token will be tak
 
 
 
+// Database working------------
+
+1. firstly we have created the category whose referred to Product id.
+2. When we are uploading any Product than Product schema is referred to category name 
+3. So while uploading we need to first have name in category nd thann category will get the product id in each group what we have updated through the create product schema
+and user referred is used to keep tracking for order 
+
+
+
 
