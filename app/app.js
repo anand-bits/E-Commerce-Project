@@ -8,6 +8,7 @@ import colorRouter from "../routes/colorRoutes.js";
 import reviewRouter from "../routes/reviewRoutes.js";
 import orderRouter from "../routes/orderRoutes.js";
 import Stripe from "stripe";
+import Order from "../model/Order.js";
 
 const app = express();
 
@@ -17,7 +18,7 @@ const stripe = new Stripe(process.env.STRIPE_KEY);
 // This is your Stripe CLI webhook secret for testing your endpoint locally.
 const endpointSecret = "whsec_98e746c9d412779a5929a1bbcc5d487f1dabe5cab69fca772e08bc484edb1dbf";
 
-app.post('/webhook', express.raw({ type: 'application/json' }), (request, response) => {
+app.post('/webhook', express.raw({ type: 'application/json' }), async (request, response) => {
   try {
     const sig = request.headers['stripe-signature'];
 
@@ -32,18 +33,33 @@ app.post('/webhook', express.raw({ type: 'application/json' }), (request, respon
       return;
     }
 
-    // Handle the event
-    switch (event.type) {
-      case 'payment_intent.succeeded':
-        const paymentIntentSucceeded = event.data.object;
-        // Then define and call a function to handle the event payment_intent.succeeded
-        break;
-      // ... handle other event types
-      default:
-        console.log(`Unhandled event type ${event.type}`);
-    }
+    if (event.type === "checkout.session.completed") {
+      // Update the order
+      const session = event.data.object;
+      const { orderId } = session.metadata;
+      const paymentStatus = session.payment_status;
+      const paymentMethod = session.payment_method_types[0];
+      const totalAmount = session.amount_total;
+      const currency = session.currency;
 
-    // Return a 200 response to acknowledge receipt of the event
+      console.log(orderId, paymentStatus, paymentMethod, totalAmount, currency);
+      // Find the order
+      const order = await Order.findByIdAndUpdate(
+        JSON.parse(orderId),
+        {
+          totalPrice: totalAmount / 100,
+          currency,
+          paymentMethod,
+          paymentStatus,
+        },
+        {
+          new: true,
+        }
+      );
+      console.log(order);
+    } else {
+      return;
+    }
     response.send();
   } catch (error) {
     console.error(`Error in webhook processing: ${error.message}`);
