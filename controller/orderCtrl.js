@@ -2,19 +2,22 @@ import asyncHandler from "express-async-handler";
 import Order from "../model/Order.js";
 import User from "../model/User.js";
 import Product from "../model/Product.js";
-import Razorpay from 'razorpay';
+import Stripe from "stripe";
 import { config } from "dotenv";
-config(); 
-//RazorPay Implementation Secret Key and Id from env file 
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY,
-    key_secret: process.env.RAZORPAY_SECRET,
-  });
-  
+config();
+
+
+
 
 // @description Create Order
 // @route POST /api/v1/orders
 // @access Private
+
+// stripe Instance
+const stripe=new Stripe(process.env.STRIPE_KEY);
+
+
+
 export const createOrderCtrl = asyncHandler(async (req, res) => {
   try {
     const { orderItems, shippingAddress: reqShippingAddress, totalPrice } = req.body;
@@ -51,13 +54,7 @@ export const createOrderCtrl = asyncHandler(async (req, res) => {
       totalPrice,
     });
     
-     // Create Razorpay order
-     const razorpayOrder = await razorpay.orders.create({
-        amount: totalPrice * 100, // Razorpay amount is in paise
-        currency: 'INR', // Change this to your currency
-        receipt: order._id.toString(), // Use your own logic for generating a receipt ID
-        payment_capture: 1, // Auto-capture payment
-      });
+
 
     const products = await Product.find({ _id: { $in: orderItems } });
 
@@ -71,7 +68,7 @@ export const createOrderCtrl = asyncHandler(async (req, res) => {
       await product.save();
     });
 
-    order.razorpayOrderId = razorpayOrder.id;
+
     // Push order into user
     user.orders.push(order?._id);
     await user.save();
@@ -80,14 +77,38 @@ export const createOrderCtrl = asyncHandler(async (req, res) => {
     // Additional steps for payment, webhook, etc.
     // ...
 
-    res.status(200).json({
-      success: true,
-      message: "Order created successfully",
-      order,
-      razorpayOrderId: razorpayOrder.id,
-      razorpayAmount: razorpayOrder.amount,
-      razorpayCurrency: razorpayOrder.currency,
-    });
+    // Stripe Session
+    const convertedOrders = orderItems.map((item) => {
+        return {
+          price_data: {
+            currency: "INR",
+            product_data: {
+              name: item?.name,
+              description: item?.description,
+            },
+            unit_amount: item?.price * 100,
+          },
+          quantity: item?.qty,
+        };
+      });
+      
+      const session = await stripe.checkout.sessions.create({
+        line_items: convertedOrders,
+        mode: 'payment',
+        success_url: 'http://localhost:3000/success',
+        cancel_url: 'http://localhost:3000/cancel',
+      });
+      
+      res.send({ url: session.url });
+      
+
+
+    // res.status(200).json({
+    //   success: true,
+    //   message: "Order created successfully",
+    //   order,
+    //   
+   // });
   } catch (error) {
     res.status(400).json({
       success: false,

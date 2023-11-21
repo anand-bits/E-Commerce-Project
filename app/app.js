@@ -9,6 +9,7 @@ import reviewRouter from "../routes/reviewRoutes.js";
 import orderRouter from "../routes/orderRoutes.js";
 
 
+
 const app = express();
 
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use('/api/v1/brand',brandsRouter)
 app.use('/api/v1/color',colorRouter)
 app.use('/api/v1/review',reviewRouter);
 app.use('/api/v1/order',orderRouter);
+
 // middleware
 app.use(notFound);
 app.use(globalErrHandler);
