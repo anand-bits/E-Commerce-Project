@@ -81,10 +81,7 @@ Refer to the [API Documentation](docs/api.md) for details on each API endpoint, 
 
 ## Authentication
 
-User authentication is implemented using JWT tokens. Include the token in the `Authorization` header of your requests:
-
-```http
-Authorization: Bearer your_jwt_token
+User authentication is implemented using JWT tokens. Include the token in the `Authorization` header of your requests
 
 
 ## Payment Integration
