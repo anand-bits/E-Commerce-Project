@@ -1,11 +1,17 @@
 import Product from "../model/Product.js";
 import Review from "../model/Review.js";
 import asyncHandler from "express-async-handler";
+import mongoose from "mongoose";
 
 export const createReviewCtrl = asyncHandler(async (req, res) => {
   try {
     const { productID } = req.params;
     const { message, rating } = req.body;
+
+    // Check if the provided productID is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(productID)) {
+      throw new Error("Invalid Product ID");
+    }
 
     // Find the product
     const productFound = await Product.findById(productID);
