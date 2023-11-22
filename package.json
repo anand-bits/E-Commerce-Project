@@ -10,6 +10,9 @@
     "start": "nodemon server.js",
     "start:dev": "nodemon server.js"
   },
+  "engines": {
+    "node": "15.x"
+  },
   "author": "Anand Kumar",
   "license": "ISC",
   "dependencies": {
