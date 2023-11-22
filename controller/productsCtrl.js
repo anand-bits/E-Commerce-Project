@@ -8,6 +8,12 @@ import Brand from "../model/Brands.js";
 // @access Private/Admin
 export const createProductCtrl = asyncHandler(async (req, res, next) => {
     try {
+    
+    // url for Image of pr
+        const convertedImgs= req.files.map((file)=>file.path);
+
+
+    // Get coupon code from query parameter
         const { name, description, category, sizes, colors, price, totalQty, brand } = req.body;
 
         // Product Existence Check
@@ -51,7 +57,8 @@ export const createProductCtrl = asyncHandler(async (req, res, next) => {
             user: req.userAuthId,
             price,
             totalQty,
-            brand
+            brand,
+            images:convertedImgs
         });
 
         // Pushing the product id into category.

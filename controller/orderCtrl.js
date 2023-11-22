@@ -17,7 +17,7 @@ const stripe = new Stripe(process.env.STRIPE_KEY);
 
 export const createOrderCtrl = asyncHandler(async (req, res) => {
   try {
-    // Get coupon code from query parameter
+    // 
     const { coupon } = req?.query;
 
     // Find the coupon in the database
