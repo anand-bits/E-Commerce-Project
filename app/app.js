@@ -9,6 +9,7 @@ import reviewRouter from "../routes/reviewRoutes.js";
 import orderRouter from "../routes/orderRoutes.js";
 import Stripe from "stripe";
 import Order from "../model/Order.js";
+import couponRouter from "../routes/couponRoutes.js";
 
 const app = express();
 
@@ -77,6 +78,7 @@ app.use('/api/v1/brand', brandsRouter);
 app.use('/api/v1/color', colorRouter);
 app.use('/api/v1/review', reviewRouter);
 app.use('/api/v1/order', orderRouter);
+app.use('/api/v1/coupon',couponRouter)
 
 // Middleware
 app.use(notFound);

@@ -5,25 +5,48 @@ import Product from "../model/Product.js";
 import mongoose from "mongoose";
 import Stripe from "stripe";
 import { config } from "dotenv";
+import Coupon from "../model/Coupon.js";
 config();
 
 // stripe Instance
 const stripe = new Stripe(process.env.STRIPE_KEY);
 
-// @description Create Order
-// @route POST /api/v1/orders
-// @access Private
+// @desc Create an order
+// @route POST /api/v1/
+// @desc Create an order
+
 export const createOrderCtrl = asyncHandler(async (req, res) => {
   try {
-    const { orderItems, shippingAddress: reqShippingAddress, totalPrice } = req.body;
+    // Get coupon code from query parameter
+    const { coupon } = req?.query;
 
-    // Find the user
+    // Find the coupon in the database
+    const couponFound = await Coupon.findOne({
+      code: coupon?.toUpperCase(),
+    });
+
+    // Check if the coupon exists
+    if (!couponFound) {
+      throw new Error("Coupon does not exist");
+    }
+
+    // Check if the coupon is expired
+    if (couponFound.isExpired) {
+      throw new Error("Coupon has expired");
+    }
+
+    // Calculate the discount based on the coupon
+    const discount = couponFound.discount / 100;
+
+    // Get order items and shipping address from the request body
+    const { orderItems, shippingAddress: reqShippingAddress } = req.body;
+
+    // Find the user by their authentication ID
     const user = await User.findById(req.userAuthId);
 
-    // Check if user has shipping address
+    // Check if the user has a default shipping address
     let shippingAddress;
     if (user?.hasShippingAddress) {
-      // If user has a shipping address, use that
       shippingAddress = user.shippingAddress;
     } else {
       // If not, use the one provided in the request body
@@ -35,71 +58,88 @@ export const createOrderCtrl = asyncHandler(async (req, res) => {
       }
     }
 
-    // Check if order is not empty
-    if (orderItems?.length <= 0) {
+    // Check if order items are provided and not empty
+    if (!orderItems || orderItems.length === 0) {
       throw new Error("No Order Items");
     }
 
-    // Place/create order - save into DB
+    // Calculate the total price for the order
+    const totalPrice = await orderItems.reduce(async (accPromise, order) => {
+      const acc = await accPromise;
+      // Find the corresponding product for the order item
+      const product = await Product.findOne({ _id: order?._id?.toString() });
+
+      // Check if the product is found
+      if (!product) {
+        throw new Error(`Product not found for order item with ID: ${order?._id}`);
+      }
+
+      // Update the totalSold for the product
+      product.totalSold += order.qty;
+      await product.save();
+
+      // Calculate the total price for the current item
+      const itemTotalPrice = order.qty * order.price;
+
+      // Check if the calculated total price is valid
+      if (isNaN(itemTotalPrice)) {
+        throw new Error(`Invalid price for product: ${product.name}`);
+      }
+
+      return acc + itemTotalPrice;
+    }, Promise.resolve(0));
+
+    // Calculate the final total price after applying the discount
+    const finalTotalPrice = couponFound ? totalPrice - totalPrice * discount : totalPrice;
+
+    // Create the order document in the database
     const order = await Order.create({
       user: user?._id,
       orderItems,
       shippingAddress,
-      totalPrice,
+      totalPrice: finalTotalPrice,
     });
 
-    const products = await Product.find({ _id: { $in: orderItems } });
-
-    orderItems?.map(async (order) => {
-      const product = products?.find((product) => {
-        return product?._id?.toString() === order?._id?.toString();
-      });
-      if (product) {
-        product.totalSold += order.qty;
-      }
-      await product.save();
-    });
-
-    // Push order into user
+    // Push the order ID into the user's orders array
     user.orders.push(order?._id);
     await user.save();
 
-    // Additional steps for payment, webhook, etc.
-    // ...
-
-    // Stripe Session
-    const convertedOrders = orderItems.map((item) => {
-      return {
-        price_data: {
-          currency: "INR",
-          product_data: {
-            name: item?.name,
-            description: item?.description,
-          },
-          unit_amount: item?.price * 100,
+    // Map the order items to the format required by Stripe
+    const convertedOrders = orderItems.map((item) => ({
+      price_data: {
+        currency: "INR",
+        product_data: {
+          name: item?.name,
+          description: item?.description,
         },
-        quantity: item?.qty,
-      };
-    });
+        unit_amount: finalTotalPrice * item.qty,
+      },
+      quantity: item?.qty,
+    }));
 
+    // Create a Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       line_items: convertedOrders,
       metadata: {
         orderId: JSON.stringify(order?._id),
       },
-      mode: 'payment',
-      success_url: 'http://localhost:3000/success',
-      cancel_url: 'http://localhost:3000/cancel',
+      mode: "payment",
+      success_url: "http://localhost:3000/success",
+      cancel_url: "http://localhost:3000/cancel",
     });
 
+    // Send the Stripe checkout session URL as the response
     res.send({ url: session.url });
   } catch (error) {
+    // Handle errors and send a response with an error message
     res.status(400).json({
       success: false,
       message: error.message,
     });
   }
 });
+
+
 
 // @desc Get all the orders
 // @route Get /api/v1/orders
