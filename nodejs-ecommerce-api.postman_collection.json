@@ -1,0 +1,1125 @@
+{
+	"info": {
+		"_postman_id": "3e341d08-7733-4f46-84f6-774342c3c2eb",
+		"name": "nodejs-ecommerce-api",
+		"description": "API for Online shopping Cart----\n\nBasically running On render but maybe suspended due to Charge..\n\nSo this Document is created while running the server by base Address:- [https://online-shopping-api-qca9.onrender.com/api/v1](https://online-shopping-api-qca9.onrender.com/api/v1)\n\nif wana test mail me :- h20220277@pilani.bits-pilani.ac.in",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26931476",
+		"_collection_link": "https://www.postman.com/aerospace-physicist-42082810/workspace/nodejs-ecommerce-api/collection/26931476-3e341d08-7733-4f46-84f6-774342c3c2eb?action=share&source=collection_link&creator=26931476"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullname\": \"Test2\",\r\n    \"email\": \"test2@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/user/register",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user",
+								"register"
+							]
+						},
+						"description": "This API endpoint is used to register a new user. It is an HTTP POST request that should be sent to the `{{baseURL}}/user/register` URL.\n\n### Request Parameters\n\nThis endpoint does not require any request parameters.\n\n### Response\n\nUpon successful registration, the API will return a response with a status code of 200. The response body will contain a JSON object with the following properties:\n\n- `success` (boolean): Indicates whether the registration was successful or not. In this case, it will be `true`.\n- `message` (string): A message related to the registration process. In this case, it will be an empty string.\n    \n\nPlease note that this response does not include any specific information about the registered user. Additional API endpoints may be available to retrieve user details or perform other actions related to the registered user."
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Validate 'success' field is true\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"  \r",
+									"  pm.expect(responseData.success).to.be.true;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Token field should not be empty\", function() {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData.token).to.exist.and.to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Verify fullname is a non-empty string containing only alphabets and spaces\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(responseData.userFound.fullname).to.be.a('string', \"Fullname should be a string\");\r",
+									"    pm.expect(responseData.userFound.fullname).to.match(/^[A-Za-z\\s]+$/, \"Fullname should contain only alphabets and spaces\");\r",
+									"    pm.expect(responseData.userFound.fullname).to.have.length.above(0, \"Fullname should not be empty\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"test2@gmail.com\",\r\n    \"password\":\"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/user/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user",
+								"login"
+							]
+						},
+						"description": "\nThis endpoint is used to log in a user. It sends an HTTP POST request to the `{{baseURL}}/user/login` URL.\n\nThe request should include the following parameters in the request body:\n- `email` (string): The email address of the user.\n- `password` (string): The password of the user.\n\nThe response returned by the server will have a status code of 200 if the login is successful. The response body will contain the following properties:\n- `success` (boolean): Indicates whether the login was successful or not.\n- `message` (string): A message from the server, if any.\n- `userFound` (object): An object containing information about the logged-in user. It has the following properties:\n  - `_id` (string): The unique identifier of the user.\n  - `fullname` (string): The full name of the user.\n  - `email` (string): The email address of the user.\n  - `password` (string): The password of the user.\n  - `orders` (array): An array of the user's orders.\n  - `wishLists` (array): An array of the user's wish lists.\n  - `isAdmin` (boolean): Indicates whether the user is an admin or not.\n  - `hasShippingAddress` (boolean): Indicates whether the user has a shipping address or not.\n  - `createdAt` (string): The date and time when the user was created.\n  - `updatedAt` (string): The date and time when the user was last updated.\n  - `__v` (number): The version number of the user.\n- `token` (string): A token that can be used for authentication in subsequent requests.\n\nPlease note that the response may not include actual values for the properties mentioned above.\n\nTo log in a user, send an HTTP POST request to `{{baseURL}}/user/login` with the required parameters in the request body. The server will respond with the user information and a token for authentication.\n\n"
+					},
+					"response": []
+				},
+				{
+					"name": "User profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTE1MywiZXhwIjoxNzAwNjc0MzUzfQ.x_e5xbO1bIbwFhs0_xIS9Ruj1UJSSxkXkV7UCyMr9pY",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/user/profile",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user",
+								"profile"
+							]
+						},
+						"description": "This API endpoint is used to retrieve the profile information of a user. It makes an HTTP GET request to the specified URL: `{{baseURL}}/user/profile/`.\n\nThe response returned by the last execution of this request had a status code of 200, indicating a successful response. The response body contained the following information:\n\n- `status`: The status of the response.\n- `message`: A message associated with the response.\n- `user`: An object containing the user's profile information.\n    - `shippingAddress`: An object representing the user's shipping address.\n        - `address`: The user's address.\n        - `city`: The city where the user resides.\n        - `postalCode`: The postal code of the user's address.\n        - `province`: The province or state where the user resides.\n        - `phone`: The user's phone number.\n    - `_id`: The unique identifier of the user.\n    - `fullname`: The full name of the user.\n    - `email`: The email address of the user.\n    - `password`: The password of the user.\n    - `orders`: An array of objects representing the user's orders.\n        - `_id`: The unique identifier of the order.\n        - `user`: The user associated with the order.\n        - `orderItems`: An array of objects representing the items in the order.\n            - `_id`: The unique identifier of the order item.\n            - `name`: The name of the order item.\n            - `qty`: The quantity of the order item.\n            - `price`: The price of the order item.\n        - `shippingAddress`: The shipping address associated with the order.\n            - `address`: The address for shipping the order.\n            - `city`: The city for shipping the order.\n            - `postalCode`: The postal code for shipping the order.\n            - `province`: The province or state for shipping the order.\n            - `phone`: The phone number for shipping the order.\n        - `paymentStatus`: The payment status of the order.\n        - `paymentMethod`: The payment method used for the order.\n        - `totalPrice`: The total price of the order.\n        - `currency`: The currency used for the order.\n        - `status`: The status of the order.\n        - `orderNumber`: The order number.\n        - `createdAt`: The date and time when the order was created.\n        - `updatedAt`: The date and time when the order was last updated.\n        - `__v`: The version of the order.\n    - `wishLists`: An array of objects representing the user's wish lists.\n    - `isAdmin`: A boolean value indicating whether the user is an admin.\n    - `hasShippingAddress`: A boolean value indicating whether the user has a shipping address.\n    - `createdAt`: The date and time when the user was created.\n    - `updatedAt`: The date and time when the user was last updated.\n    - `__v`: The version of the user.\n\nPlease note that any specific values (such as names, emails, and addresses) have been omitted from this description for security and privacy reasons."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Shipping Address",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTE1MywiZXhwIjoxNzAwNjc0MzUzfQ.x_e5xbO1bIbwFhs0_xIS9Ruj1UJSSxkXkV7UCyMr9pY",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/user/update/shipping",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"user",
+								"update",
+								"shipping"
+							]
+						},
+						"description": "This API endpoint allows you to update the shipping address of a user. It is an HTTP PUT request to `{{baseURL}}/user/update/shipping`.\n\nThe request should include the updated shipping address details in the request body. The response will contain the updated user object with the modified shipping address.\n\n### Request Parameters\n\nThe request body should include the following parameters:\n\n- `address` (string): The updated shipping address.\n- `city` (string): The updated city name.\n- `postalCode` (string): The updated postal code.\n- `province` (string): The updated province name.\n- `phone` (string): The updated phone number.\n    \n\n### Response\n\nThe API will respond with a JSON object containing the updated user information. The response will have the following properties:\n\n- `status` (string): The status of the request.\n- `message` (string): A message regarding the status of the request.\n- `user` (object): The updated user object.\n    - `shippingAddress` (object): The updated shipping address object.\n        - `address` (string): The updated shipping address.\n        - `city` (string): The updated city name.\n        - `postalCode` (string): The updated postal code.\n        - `province` (string): The updated province name.\n        - `phone` (string): The updated phone number.\n    - `_id` (string): The unique identifier of the user.\n    - `fullname` (string): The full name of the user.\n    - `email` (string): The email address of the user.\n    - `password` (string): The password of the user.\n    - `orders` (array): An array of order IDs associated with the user.\n    - `wishLists` (array): An array of wish list IDs associated with the user.\n    - `isAdmin` (boolean): Indicates whether the user is an admin or not.\n    - `hasShippingAddress` (boolean): Indicates whether the user has a shipping address or not.\n    - `createdAt` (string): The timestamp of when the user was created.\n    - `updatedAt` (string): The timestamp of when the user was last updated.\n    - `__v` (number): The version of the user object.\n\nPlease note that the response may not include all the properties mentioned above if they were not modified during the update."
+					},
+					"response": []
+				}
+			],
+			"description": "This collection is for User and Admin which is also user"
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQwNzk2NCwiZXhwIjoxNzAwNjY3MTY0fQ.m1VpipaawfG6oWPGO_TM48OCEAsMOp-wTf49pOIGRpI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Skirt7\",\r\n    \"description\":\"Skirt For the girl\",\r\n    \"category\":\"women\",\r\n    \"sizes\":\"XL\",\r\n    \"colors\":\"yellow\",\r\n    \"price\":4569,\r\n    \"totalQty\":\"2\",\r\n    \"brand\":\"adidas\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/product/createproduct",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"product",
+								"createproduct"
+							]
+						},
+						"description": "\nThis API endpoint is used to create a new product. It sends an HTTP POST request to the URL `{{baseURL}}/product/createproduct`.\n\nThe request should include the following parameters:\n\n- `name` (string): The name of the product.\n- `description` (string): The description of the product.\n- `brand` (string): The brand of the product.\n- `category` (string): The category of the product.\n- `sizes` (array of strings): The available sizes of the product.\n- `colors` (array of strings): The available colors of the product.\n- `user` (string): The user who created the product.\n- `images` (array of strings): The URLs of the images of the product.\n- `reviews` (array): An array of reviews for the product.\n- `price` (number): The price of the product.\n- `totalQty` (number): The total quantity of the product.\n- `totalSold` (number): The total number of units sold of the product.\n\nThe response will have the following properties:\n\n- `status` (string): The status of the response.\n- `message` (string): A message related to the response.\n- `product` (object): An object representing the created product.\n  - `name` (string): The name of the product.\n  - `description` (string): The description of the product.\n  - `brand` (string): The brand of the product.\n  - `category` (string): The category of the product.\n  - `sizes` (array of strings): The available sizes of the product.\n  - `colors` (array of strings): The available colors of the product.\n  - `user` (string): The user who created the product.\n  - `images` (array of strings): The URLs of the images of the product.\n  - `reviews` (array): An array of reviews for the product.\n  - `price` (number): The price of the product.\n  - `totalQty` (number): The total quantity of the product.\n  - `totalSold` (number): The total number of units sold of the product.\n  - `_id` (string): The unique identifier of the product.\n  - `createdAt` (string): The timestamp when the product was created.\n  - `updatedAt` (string): The timestamp when the product was last updated.\n  - `__v` (number): The version of the product.\n  - `qtyLeft` (number): The quantity of the product left in stock.\n  - `totalReviews` (number): The total number of reviews for the product.\n  - `averageRating` (string): The average rating of the product.\n  - `id` (string): The unique identifier of the product.\n\nPlease note that the values for some properties are empty strings or zero in the example response. These values will be populated with actual data when a product is created.\n\nThe last execution of this request returned a response with a status code of 201, indicating that the product was successfully created.\n\nIf you have any further questions or need assistance, please let me know.\n"
+					},
+					"response": []
+				},
+				{
+					"name": "Product List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/product/getproducts",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"product",
+								"getproducts"
+							]
+						},
+						"description": "This API endpoint is used to retrieve a list of products. It sends an HTTP GET request to the specified URL: `{{baseURL}}/product/getproducts`.\n\nThe last execution of this request returned a response with a status code of 200, indicating a successful request. The response body contained the following information:\n\n- `success`: a boolean value indicating the success of the request.\n- `results`: the number of results returned in the response.\n- `pagination`: an object containing pagination information.\n- `message`: a message related to the request.\n- `product`: an array of product objects, each containing the following properties:\n    - `_id`: the unique identifier of the product.\n    - `name`: the name of the product.\n    - `description`: a description of the product.\n    - `brand`: the brand of the product.\n    - `category`: the category of the product.\n    - `sizes`: an array of available sizes for the product.\n    - `colors`: an array of available colors for the product.\n    - `user`: the user associated with the product.\n    - `images`: an array of image URLs associated with the product.\n    - `reviews`: an array of review objects, each containing the following properties:\n        - `_id`: the unique identifier of the review.\n        - `user`: the user who wrote the review.\n        - `product`: the product the review is for.\n        - `message`: the content of the review.\n        - `rating`: the rating given by the user.\n        - `createdAt`: the timestamp of when the review was created.\n        - `updatedAt`: the timestamp of when the review was last updated.\n        - `__v`: the version of the review object.\n    - `price`: the price of the product.\n    - `totalQty`: the total quantity of the product.\n    - `totalSold`: the total quantity of the product sold.\n    - `createdAt`: the timestamp of when the product was created.\n    - `updatedAt`: the timestamp of when the product was last updated.\n    - `__v`: the version of the product object.\n    - `qtyLeft`: the quantity of the product remaining.\n    - `totalReviews`: the total number of reviews for the product.\n    - `averageRating`: the average rating of the product.\n    - `id`: the ID of the product.\n\nPlease note that specific values such as names, emails, and timestamps have been excluded from this description for security and privacy reasons.\n\nTo use this API endpoint, send an HTTP GET request to `{{baseURL}}/product/getproducts`. The response will contain a list of products along with their associated information."
+					},
+					"response": []
+				},
+				{
+					"name": "Single Product By id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"brand\":\"puma\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/product/getproduct/6559e9a9be442a21b6c692c8",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"product",
+								"getproduct",
+								"6559e9a9be442a21b6c692c8"
+							]
+						},
+						"description": "This endpoint is used to retrieve a specific product by its ID. The product ID is provided as a parameter in the URL.\n\nTo retrieve a product, send an HTTP GET request to `{{baseURL}}/product/getproduct/{productId}` where `{productId}` is the unique identifier of the product.\n\nThe response will contain information about the product, including its name, description, brand, category, available sizes and colors, price, quantity, and other details.\n\nHere is an example response for a successful request:\n\n``` json\n{\n  \"success\": true,\n  \"message\": \"\",\n  \"product\": {\n    \"_id\": \"655d19ed72ce1149dbb0e740\",\n    \"name\": \"Example Product\",\n    \"description\": \"This is an example product.\",\n    \"brand\": \"Example Brand\",\n    \"category\": \"Example Category\",\n    \"sizes\": [\"S\", \"M\", \"L\"],\n    \"colors\": [\"Red\", \"Blue\", \"Green\"],\n    \"user\": \"example_user\",\n    \"images\": [\"image1.jpg\", \"image2.jpg\"],\n    \"reviews\": [\n      {\n        \"_id\": \"review_id\",\n        \"user\": \"review_user\",\n        \"product\": \"655d19ed72ce1149dbb0e740\",\n        \"message\": \"This product is great!\",\n        \"rating\": 5,\n        \"createdAt\": \"2021-01-01T00:00:00.000Z\",\n        \"updatedAt\": \"2021-01-01T00:00:00.000Z\",\n        \"__v\": 0\n      }\n    ],\n    \"price\": 9.99,\n    \"totalQty\": 100,\n    \"totalSold\": 50,\n    \"createdAt\": \"2021-01-01T00:00:00.000Z\",\n    \"updatedAt\": \"2021-01-01T00:00:00.000Z\",\n    \"__v\": 0,\n    \"qtyLeft\": 50,\n    \"totalReviews\": 1,\n    \"averageRating\": 5,\n    \"id\": \"655d19ed72ce1149dbb0e740\"\n  }\n}\n\n ```\n\nPlease note that the actual values in the response may vary.\n\nThe `success` field indicates whether the request was successful or not. If `success` is `true`, the product was found and the information is provided in the `product` field. If `success` is `false`, an error message may be included in the `message` field.\n\nIf the product has any reviews, they will be included in the `reviews` array. Each review object contains information about the user who left the review, the message, rating, and timestamps.\n\nFeel free to explore the other fields in the response to get more details about the product."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product by Id",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"brand\":\"puma\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/product/updateproduct/6559e9a9be442a21b6c692c8",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"product",
+								"updateproduct",
+								"6559e9a9be442a21b6c692c8"
+							]
+						},
+						"description": "This endpoint is used to update a product with the given ID. The ID of the product to be updated is included in the URL as a path parameter.\n\nTo update a product, send an HTTP PUT request to `{{baseURL}}/product/updateproduct/{productId}` where `{productId}` is the ID of the product to be updated.\n\nThe request should include the updated information for the product in the request body. The request body should be in JSON format and include the following properties:\n\n- `name` (string): The name of the product.\n- `description` (string): The description of the product.\n- `brand` (string): The brand of the product.\n- `category` (string): The category of the product.\n- `sizes` (array of strings): The available sizes of the product.\n- `colors` (array of strings): The available colors of the product.\n- `user` (string): The user who updated the product.\n- `images` (array): The images of the product.\n- `reviews` (array): The reviews of the product.\n- `price` (number): The price of the product.\n- `totalQty` (number): The total quantity of the product.\n- `totalSold` (number): The total number of the product sold.\n- `createdAt` (string): The date and time when the product was created.\n- `updatedAt` (string): The date and time when the product was last updated.\n- `__v` (number): The version of the product.\n- `qtyLeft` (number): The quantity of the product left.\n- `totalReviews` (number): The total number of reviews for the product.\n- `averageRating` (string): The average rating of the product.\n- `id` (string): The ID of the product.\n    \n\nThe response will have a status code of 200 if the product update is successful. The response body will be in JSON format and will include the following properties:\n\n- `success` (boolean): Indicates whether the product update was successful or not.\n- `message` (string): A message providing additional information about the product update.\n- `product` (object): An object representing the updated product. The properties of the product object will be the same as the request body properties described above.\n    \n\nPlease note that the values for the properties in the response example are placeholders and may not reflect the actual values returned by the API."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete the product with ID",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/product/deleteproduct/6559e9a9be442a21b6c692c8",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"product",
+								"deleteproduct",
+								"6559e9a9be442a21b6c692c8"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Create Categories",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQwNzk2NCwiZXhwIjoxNzAwNjY3MTY0fQ.m1VpipaawfG6oWPGO_TM48OCEAsMOp-wTf49pOIGRpI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"men\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/category/createcategory",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"category",
+								"createcategory"
+							]
+						},
+						"description": "This API endpoint is used to create a new category. It sends an HTTP POST request to the URL `{{baseURL}}/category/createcategory`.\n\nThe request should include the following parameters:\n\n- `name` (string): The name of the category.\n- `user` (string): The user associated with the category.\n- `image` (string): The URL of the image associated with the category.\n- `products` (array): An array of product IDs that belong to the category.\n    \n\nThe response from the API will have a status code of 200 if the request is successful. The response body will contain the following properties:\n\n- `status` (string): The status of the response.\n- `message` (string): A message associated with the response.\n- `category` (object): An object representing the created category.\n    - `name` (string): The name of the category.\n    - `user` (string): The user associated with the category.\n    - `image` (string): The URL of the image associated with the category.\n    - `products` (array): An array of product IDs that belong to the category.\n    - `_id` (string): The unique identifier of the category.\n    - `createdAt` (string): The timestamp of when the category was created.\n    - `updatedAt` (string): The timestamp of when the category was last updated.\n    - `__v` (number): The version number of the category.\n\nPlease note that the actual values for `name`, `user`, `image`, `products`, `_id`, `createdAt`, `updatedAt`, and `__v` will be specific to the created category and may vary in each response."
+					},
+					"response": []
+				},
+				{
+					"name": "get All Categories",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/category/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"category",
+								""
+							]
+						},
+						"description": "This API endpoint allows you to retrieve a list of categories.\n\nTo retrieve the list of categories, send a GET request to `{{baseURL}}/category/`.\n\n### Request\n\n- Method: GET\n- Endpoint: `{{baseURL}}/category/`\n    \n\n### Response\n\nThe API will respond with a JSON object containing the following properties:\n\n- `status` (string): The status of the response.\n- `message` (string): A message associated with the response.\n- `categories` (array): An array of category objects. Each category object has the following properties:\n    - `_id` (string): The unique identifier of the category.\n    - `name` (string): The name of the category.\n    - `user` (string): The user associated with the category.\n    - `image` (string): The image URL of the category.\n    - `products` (array): An array of product IDs associated with the category.\n    - `createdAt` (string): The date and time when the category was created.\n    - `updatedAt` (string): The date and time when the category was last updated.\n    - `__v` (integer): The version of the category object.\n\nExample response:\n\n``` json\n{\n  \"status\": \"\",\n  \"message\": \"\",\n  \"categories\": [\n    {\n      \"_id\": \"\",\n      \"name\": \"\",\n      \"user\": \"\",\n      \"image\": \"\",\n      \"products\": [\"\"],\n      \"createdAt\": \"\",\n      \"updatedAt\": \"\",\n      \"__v\": 0\n    }\n  ]\n}\n\n ```\n\nPlease note that the values for the properties `_id`, `name`, `user`, `image`, `products`, `createdAt`, `updatedAt`, and `__v` will be populated with actual data in the response."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Categories by Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/category/655a89860494bbfb6a8aaffd",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"category",
+								"655a89860494bbfb6a8aaffd"
+							]
+						},
+						"description": "This HTTP GET request is used to retrieve information about a specific category. The request should be made to the endpoint `{{baseURL}}/category/655a89860494bbfb6a8aaffd`, where `655a89860494bbfb6a8aaffd` is the unique identifier of the category.\n\n### Response\n\nThe response to this request will have a status code of 200, indicating a successful request. The response body will contain the following properties:\n\n- `status`: A string indicating the status of the request.\n- `message`: A string providing additional information about the request.\n- `category`: The details of the category. In this case, the value is null, indicating that no category was found with the given identifier.\n    \n\nPlease note that the response may vary depending on the specific category identifier used in the request."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category By ID",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Women\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/category/655a89860494bbfb6a8aaffd",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"category",
+								"655a89860494bbfb6a8aaffd"
+							]
+						},
+						"description": "This API endpoint is used to update a specific category identified by its unique ID. The ID of the category to be updated is passed as a path parameter in the URL.\n\nTo update a category, send an HTTP PUT request to `{{baseURL}}/category/{categoryID}` where `{categoryID}` is the ID of the category to be updated.\n\nThe request should include the updated details of the category in the request body. The request body should be in JSON format and should contain the following properties:\n\n- `name` (string): The updated name of the category.\n- `user` (string): The updated user associated with the category.\n- `image` (string): The updated image URL of the category.\n- `products` (array): An array of product IDs associated with the category.\n    \n\nThe response to the request will contain the updated category object. The response body will be in JSON format and will include the following properties:\n\n- `_id` (string): The unique ID of the category.\n- `name` (string): The updated name of the category.\n- `user` (string): The updated user associated with the category.\n- `image` (string): The updated image URL of the category.\n- `products` (array): An array of product IDs associated with the category.\n- `createdAt` (string): The timestamp of when the category was created.\n- `updatedAt` (string): The timestamp of when the category was last updated.\n- `__v` (number): The version of the category object.\n    \n\nPlease note that the response status will be 200 if the category is successfully updated.\n\nIf there are any errors or issues with the request, the response will include an appropriate error message in the `message` property."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete the category with ID",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/product/deleteproduct/6559e9a9be442a21b6c692c8",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"product",
+								"deleteproduct",
+								"6559e9a9be442a21b6c692c8"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Brands",
+			"item": [
+				{
+					"name": "Create Brand",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWQxOGNkNzJjZTExNDlkYmIwZTcyZCIsImlhdCI6MTcwMDYwMDAzMSwiZXhwIjoxNzAwODU5MjMxfQ.1w6wWQlyIJ-AQb_fYScCFTrrbOCxfk3FbYoYP3awdMU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"adidas\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/brand/createbrand",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"brand",
+								"createbrand"
+							]
+						},
+						"description": "\nThis API endpoint is used to create a new brand. It sends an HTTP POST request to `{{baseURL}}/brand/createbrand`.\n\n### Request Parameters\nThe request does not require any specific parameters. However, it is expected to include the following information in the request body:\n- `name`: The name of the brand.\n- `user`: The user associated with the brand.\n- `products`: An array of products associated with the brand.\n\n### Response\nThe response received from the server will have a status code of 200. The response body will contain the following fields:\n- `status`: The status of the request.\n- `message`: A message providing additional information about the request.\n- `brand`: An object representing the created brand. It will have the following properties:\n  - `name`: The name of the brand.\n  - `user`: The user associated with the brand.\n  - `products`: An array of products associated with the brand.\n  - `_id`: The unique identifier of the brand.\n  - `createdAt`: The timestamp of when the brand was created.\n  - `updatedAt`: The timestamp of when the brand was last updated.\n  - `__v`: The version of the brand.\n\nPlease note that the actual values for `name`, `user`, `products`, `_id`, `createdAt`, `updatedAt`, and `__v` will be specific to the created brand and will vary in each response.\n\n"
+					},
+					"response": []
+				},
+				{
+					"name": "get All Brand",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/brand/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"brand",
+								""
+							]
+						},
+						"description": "This API endpoint allows you to retrieve a list of brands.\n\nTo make a request, send a GET request to `{{baseURL}}/brand/`.\n\nThe response will contain a status code and a JSON object with the following properties:\n\n- `status` (string): Indicates the status of the response.\n- `message` (string): Provides additional information about the response.\n- `brands` (array): Contains a list of brand objects.\n    - `_id` (string): The unique identifier of the brand.\n    - `name` (string): The name of the brand.\n    - `user` (string): The user associated with the brand.\n    - `products` (array): Contains the products associated with the brand.\n    - `createdAt` (string): The timestamp of when the brand was created.\n    - `updatedAt` (string): The timestamp of when the brand was last updated.\n    - `__v` (number): The version of the brand object.\n\nPlease note that the values for `_id`, `name`, `user`, `products`, `createdAt`, `updatedAt`, and `__v` will be specific to each brand and may vary in your response.\n\nMake sure to handle the response appropriately based on the status code returned. A status code of 200 indicates a successful request."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Brand by Id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/brand/655b1cfebbcda4ced65f286c",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"brand",
+								"655b1cfebbcda4ced65f286c"
+							]
+						},
+						"description": "This HTTP GET request is used to retrieve information about a specific brand. The request should be made to the endpoint `{{baseURL}}/brand/655d19da72ce1149dbb0e73b`, where `655d19da72ce1149dbb0e73b` is the unique identifier of the brand.\n\nThe response to this request will have a status code of 200, indicating a successful request. The response body will contain information about the brand, including its name, user, products, creation date, and last update date.\n\nHere is an example of the response body:\n\n``` json\n{\n  \"status\": \"\",\n  \"message\": \"\",\n  \"brand\": {\n    \"_id\": \"\",\n    \"name\": \"\",\n    \"user\": \"\",\n    \"products\": [\"\"],\n    \"createdAt\": \"\",\n    \"updatedAt\": \"\",\n    \"__v\": 0\n  }\n}\n\n ```\n\nPlease note that the actual values for the properties `_id`, `name`, `user`, `products`, `createdAt`, `updatedAt`, and `__v` will be specific to the brand being requested.\n\nTo use this endpoint, replace `655d19da72ce1149dbb0e73b` in the URL with the actual identifier of the brand you want to retrieve."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Brand By ID",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Addidas\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/brand/655b696c3fb89e817b9ff904",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"brand",
+								"655b696c3fb89e817b9ff904"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete the brand with ID",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/brand/655b1cfebbcda4ced65f286c",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"brand",
+								"655b1cfebbcda4ced65f286c"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Colors",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQwNzk2NCwiZXhwIjoxNzAwNjY3MTY0fQ.m1VpipaawfG6oWPGO_TM48OCEAsMOp-wTf49pOIGRpI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"red\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/color/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"color",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/color/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"color",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/color/655b7df994c7a55f67103a33",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"color",
+								"655b7df994c7a55f67103a33"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By ID",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Addidas\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/brand/655b1cfebbcda4ced65f286c",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"brand",
+								"655b1cfebbcda4ced65f286c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete By ID",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/color/655b7fe33ff7cbe5ca2cc8bd",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"color",
+								"655b7fe33ff7cbe5ca2cc8bd"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Creating colour so that user can find products by color"
+		},
+		{
+			"name": "Review",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQwNzk2NCwiZXhwIjoxNzAwNjY3MTY0fQ.m1VpipaawfG6oWPGO_TM48OCEAsMOp-wTf49pOIGRpI",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"message\":\"Great To buy\",\r\n    \"rating\":\"5\"\r\n\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/review/655d19ed72ce1149dbb0e74",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"review",
+								"655d19ed72ce1149dbb0e74"
+							]
+						},
+						"description": "This API endpoint allows you to add a review to a specific resource identified by its ID. The resource ID is included in the URL as a path parameter.\n\nTo add a review, send a POST request to the following URL:\n\n```\n{{baseURL}}/review/655d19ed72ce1149dbb0e740\n\n ```\n\n### Request Body\n\nThe request body should contain the necessary information to create the review. The specific parameters and their values depend on the requirements of the API.\n\n### Response\n\nThe API will respond with a status code and a JSON object containing a status and message.\n\nExample Response:\n\n```\nStatus: 400\n{\n    \"status\": \"\",\n    \"message\": \"\"\n}\n\n ```\n\nPlease note that the actual values for the \"status\" and \"message\" properties may vary depending on the specific error encountered during the request."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDU1OTExOCwiZXhwIjoxNzAwODE4MzE4fQ.E427iS3DWpHAGWsSwkTOzcqDzugMj3km9m39Q99w9Bg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"orderItems\": [\r\n    {\r\n        \"_id\":\"655a29213f6a8695faf2afe6\",\r\n      \"name\": \"Skirt\",\r\n      \"qty\": 10,\r\n      \"price\": 50,\r\n      \"description\":\"Best Skirt\"\r\n      // No _id here, let MongoDB generate it\r\n    },\r\n    {\r\n    \r\n        \"_id\":\"655bdb2cb55406d8a877a678\",\r\n      \"name\": \"Monkey Cap\",\r\n      \"qty\": 10,\r\n      \"price\": 50,\r\n      \"description\":\"Monkey Cap\"\r\n    }\r\n  ],\r\n  \"shippingAddress\": {\r\n    \"firstname\": \"Anand Kumar\",\r\n    \"postalAddress\": \"Wasilpur\"\r\n  },\r\n  \"totalPrice\": 500  // Send as a number, not a string\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/order/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"order",
+								""
+							]
+						},
+						"description": "This HTTP POST request is used to create a new order. The request is sent to the URL `{{baseURL}}/order/` with an optional query parameter `coupon` set to `NEWYEAR`. The request may include additional parameters in the request body.\n\nThe last execution of this request returned a response with a status code of 200. The response body included a JSON object with a `url` property, which was an empty string.\n\nPlease refer to the API documentation for more details on the request parameters and response structure."
+					},
+					"response": []
+				},
+				{
+					"name": "get All Orders",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWQxOGNkNzJjZTExNDlkYmIwZTcyZCIsImlhdCI6MTcwMDYwMDAzMSwiZXhwIjoxNzAwODU5MjMxfQ.1w6wWQlyIJ-AQb_fYScCFTrrbOCxfk3FbYoYP3awdMU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"event\": \"payment.captured\",\r\n  \"payload\": {\r\n    \"order_id\": \"655bdb2cb55406d8a877a678\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/order/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"order",
+								""
+							]
+						},
+						"description": "This API endpoint allows you to retrieve a list of orders.\n\nTo make a request, send an HTTP GET request to `{{baseURL}}/order/`.\n\nThe response will contain a list of orders, each with the following properties:\n\n- `success` (boolean): Indicates whether the request was successful or not.\n- `message` (string): A message related to the request, if any.\n- `orders` (array): An array of order objects, each representing an individual order.\n    - `_id` (string): The unique identifier of the order.\n    - `user` (string): The user associated with the order.\n    - `orderItems` (array): An array of order item objects, each representing an individual item in the order.\n        - `_id` (string): The unique identifier of the order item.\n        - `name` (string): The name of the item.\n        - `qty` (number): The quantity of the item.\n        - `price` (number): The price of the item.\n    - `shippingAddress` (object): The shipping address associated with the order.\n        - `address` (string): The address.\n        - `city` (string): The city.\n        - `postalCode` (string): The postal code.\n        - `province` (string): The province.\n        - `phone` (string): The phone number.\n    - `paymentStatus` (string): The payment status of the order.\n    - `paymentMethod` (string): The payment method used for the order.\n    - `totalPrice` (number): The total price of the order.\n    - `currency` (string): The currency used for the order.\n    - `status` (string): The status of the order.\n    - `orderNumber` (string): The order number.\n    - `createdAt` (string): The date and time when the order was created.\n    - `updatedAt` (string): The date and time when the order was last updated.\n    - `__v` (number): The version of the order object.\n\nPlease note that the response may contain multiple orders, each with their own set of properties.\n\nExample response:\n\n``` json\n{\n  \"success\": true,\n  \"message\": \"\",\n  \"orders\": [\n    {\n      \"_id\": \"order1\",\n      \"user\": \"user1\",\n      \"orderItems\": [\n        {\n          \"_id\": \"item1\",\n          \"name\": \"Item 1\",\n          \"qty\": 2,\n          \"price\": 10\n        },\n        {\n          \"_id\": \"item2\",\n          \"name\": \"Item 2\",\n          \"qty\": 1,\n          \"price\": 15\n        }\n      ],\n      \"shippingAddress\": {\n        \"address\": \"123 Street\",\n        \"city\": \"City\",\n        \"postalCode\": \"12345\",\n        \"province\": \"Province\",\n        \"phone\": \"123-456-7890\"\n      },\n      \"paymentStatus\": \"paid\",\n      \"paymentMethod\": \"credit card\",\n      \"totalPrice\": 35,\n      \"currency\": \"USD\",\n      \"status\": \"completed\",\n      \"orderNumber\": \"123456\",\n      \"createdAt\": \"2022-01-01T00:00:00.000Z\",\n      \"updatedAt\": \"2022-01-01T00:00:00.000Z\",\n      \"__v\": 0\n    }\n  ]\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "get Order sum",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWQxOGNkNzJjZTExNDlkYmIwZTcyZCIsImlhdCI6MTcwMDYwMDAzMSwiZXhwIjoxNzAwODU5MjMxfQ.1w6wWQlyIJ-AQb_fYScCFTrrbOCxfk3FbYoYP3awdMU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"event\": \"payment.captured\",\r\n  \"payload\": {\r\n    \"order_id\": \"655bdb2cb55406d8a877a678\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/order/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"order",
+								""
+							]
+						},
+						"description": "This API endpoint is used to retrieve the summary of sales orders. It sends an HTTP GET request to the `{{baseURL}}/order/sales/sum` URL.\n\nThe response of the last execution had a status code of 200, indicating a successful response. The response body included the following information:\n\n- `success`: A boolean value indicating whether the request was successful or not.\n- `message`: A string field that can be used to convey any additional information or error messages.\n- `orders`: An array of objects representing the summary of sales orders. Each object contains the following fields:\n    - `_id`: The unique identifier of the order.\n    - `minimumSale`: The minimum sale amount among all the orders.\n    - `totalSales`: The total sales amount across all the orders.\n    - `maxSale`: The maximum sale amount among all the orders.\n    - `avgSale`: The average sale amount across all the orders.\n- `saleToday`: An array of objects representing the summary of sales made today. Each object contains the following fields:\n    - `_id`: The unique identifier of the order (null in this case).\n    - `totalSales`: The total sales amount made today.\n\nPlease note that the values of `_id`, `minimumSale`, `totalSales`, `maxSale`, `avgSale`, and `totalSales` may vary depending on the actual data.\n\nTo use this endpoint, send an HTTP GET request to the specified URL. No request parameters are required.\n\nExample:\n\n```\nGET {{baseURL}}/order/sales/sum\n\n ```\n\nThe response will contain the summary of sales orders and sales made today.\n\nExample response:\n\n```\n{\n  \"success\": true,\n  \"message\": \"\",\n  \"orders\": [\n    {\n      \"_id\": null,\n      \"minimumSale\": 0,\n      \"totalSales\": 0,\n      \"maxSale\": 0,\n      \"avgSale\": 0\n    }\n  ],\n  \"saleToday\": [\n    {\n      \"_id\": null,\n      \"totalSales\": 0\n    }\n  ]\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Get By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/order/655cfc101b5bfc73ed9cf95",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"order",
+								"655cfc101b5bfc73ed9cf95"
+							]
+						},
+						"description": "This API endpoint retrieves information about a specific order by making an HTTP GET request to `{{baseURL}}/order/655d23a02c2aac003b6b97b5`. The order ID is included in the URL path.\n\nThe last execution of this request returned a response with a status code of 200, indicating a successful request. The response body contains the following information:\n\n- `success`: A boolean value indicating whether the request was successful or not.\n- `message`: A string message, which is empty in this case.\n- `order`: An object representing the order details.\n    - `_id`: The unique ID of the order.\n    - `user`: The user associated with the order.\n    - `orderItems`: An array of objects representing the items included in the order.\n        - `_id`: The unique ID of the item.\n        - `name`: The name of the item.\n        - `qty`: The quantity of the item.\n        - `price`: The price of the item.\n    - `shippingAddress`: An object representing the shipping address for the order.\n        - `address`: The address for shipping.\n        - `city`: The city for shipping.\n        - `postalCode`: The postal code for shipping.\n        - `province`: The province for shipping.\n        - `phone`: The phone number for shipping.\n    - `paymentStatus`: The payment status of the order.\n    - `paymentMethod`: The payment method used for the order.\n    - `totalPrice`: The total price of the order.\n    - `currency`: The currency used for the order.\n    - `status`: The status of the order.\n    - `orderNumber`: The order number.\n    - `createdAt`: The timestamp of when the order was created.\n    - `updatedAt`: The timestamp of when the order was last updated.\n    - `__v`: A version field.\n\nPlease note that specific values such as names, emails, and IDs have been omitted for security and privacy reasons."
+					},
+					"response": []
+				},
+				{
+					"name": "Update By ID",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Addidas\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/brand/655b1cfebbcda4ced65f286c",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"brand",
+								"655b1cfebbcda4ced65f286c"
+							]
+						},
+						"description": "This API endpoint is used to update an existing order. It is an HTTP PUT request that requires the order ID to be provided in the URL. The order ID in this case is \"655d23a02c2aac003b6b97b5\".\n\nThe response from the last execution of this request returned a status code of 200, indicating a successful update. The response body includes the following properties:\n\n- success: A boolean value indicating whether the update was successful or not.\n- message: A string field that can be used to display any additional message related to the update.\n- updatedOrder: An object containing the updated order details. The properties of the updatedOrder object include:\n    - _id: The unique identifier of the order.\n    - user: The user associated with the order.\n    - orderItems: An array of objects representing the items in the order. Each item object includes the following properties:\n        - _id: The unique identifier of the item.\n        - name: The name of the item.\n        - qty: The quantity of the item.\n        - price: The price of the item.\n    - shippingAddress: An object representing the shipping address. The properties of the shippingAddress object include:\n        - address: The address of the shipping location.\n        - city: The city of the shipping location.\n        - postalCode: The postal code of the shipping location.\n        - province: The province of the shipping location.\n        - phone: The phone number associated with the shipping address.\n    - paymentStatus: The payment status of the order.\n    - paymentMethod: The payment method used for the order.\n    - totalPrice: The total price of the order.\n    - currency: The currency used for the order.\n    - status: The status of the order.\n    - orderNumber: The order number.\n    - createdAt: The date and time when the order was created.\n    - updatedAt: The date and time when the order was last updated.\n    - __v: A version field indicating the version of the order object.\n\nPlease note that specific values like names, emails, and personal information are not included in the description for security and privacy reasons."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Coupons",
+			"item": [
+				{
+					"name": "Create Coupons",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDU1OTExOCwiZXhwIjoxNzAwODE4MzE4fQ.E427iS3DWpHAGWsSwkTOzcqDzugMj3km9m39Q99w9Bg",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"code\":\"New sale\",\r\n    \"discount\":\"20\",\r\n    \"startDate\":\"11-23-2023\",\r\n    \"endDate\":\"02-27-2024\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/coupon/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"coupon",
+								""
+							]
+						},
+						"description": "This API endpoint is used to create a new coupon. It sends an HTTP POST request to the specified URL.\n\n### Request\n\nThe request should include the following parameters:\n\n- `code` (string): The code for the coupon.\n- `startDate` (string): The start date of the coupon.\n- `endDate` (string): The end date of the coupon.\n- `discount` (number): The discount amount for the coupon.\n- `user` (string): The user associated with the coupon.\n    \n\n### Response\n\nThe response will have the following properties:\n\n- `status` (string): The status of the response.\n- `message` (string): A message related to the response.\n- `coupon` (object): An object containing the details of the created coupon.\n    - `code` (string): The code of the coupon.\n    - `startDate` (string): The start date of the coupon.\n    - `endDate` (string): The end date of the coupon.\n    - `discount` (number): The discount amount for the coupon.\n    - `user` (string): The user associated with the coupon.\n    - `_id` (string): The unique ID of the coupon.\n    - `createdAt` (string): The date and time when the coupon was created.\n    - `updatedAt` (string): The date and time when the coupon was last updated.\n    - `__v` (number): The version of the coupon.\n    - `isExpired` (boolean): Indicates whether the coupon is expired or not.\n    - `daysLeft` (string): The number of days left for the coupon to expire.\n    - `id` (string): The ID of the coupon.\n\n### Example\n\nRequest:\n\n```\nPOST {{baseURL}}/coupon/\n{\n  \"code\": \"SUMMER2022\",\n  \"startDate\": \"2022-06-01\",\n  \"endDate\": \"2022-08-31\",\n  \"discount\": 20,\n  \"user\": \"john@example.com\"\n}\n\n ```\n\nResponse:\n\n```\nStatus: 201\n{\n  \"status\": \"\",\n  \"message\": \"\",\n  \"coupon\": {\n    \"code\": \"SUMMER2022\",\n    \"startDate\": \"2022-06-01\",\n    \"endDate\": \"2022-08-31\",\n    \"discount\": 20,\n    \"user\": \"john@example.com\",\n    \"_id\": \"\",\n    \"createdAt\": \"\",\n    \"updatedAt\": \"\",\n    \"__v\": 0,\n    \"isExpired\": true,\n    \"daysLeft\": \"\",\n    \"id\": \"\"\n  }\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "get All Coupon",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWQxOGNkNzJjZTExNDlkYmIwZTcyZCIsImlhdCI6MTcwMDYwMDAzMSwiZXhwIjoxNzAwODU5MjMxfQ.1w6wWQlyIJ-AQb_fYScCFTrrbOCxfk3FbYoYP3awdMU",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"event\": \"payment.captured\",\r\n  \"payload\": {\r\n    \"order_id\": \"655bdb2cb55406d8a877a678\"\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/coupon/",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"coupon",
+								""
+							]
+						},
+						"description": "This API endpoint allows you to retrieve a list of coupons.\n\nTo retrieve the list of coupons, make an HTTP GET request to `{{baseURL}}/coupon/`.\n\nThe response will be a JSON object with the following properties:\n\n- `status`: The status of the response.\n- `message`: A message associated with the response.\n- `coupons`: An array of coupon objects.\n    \n\nEach coupon object in the `coupons` array will have the following properties:\n\n- `_id`: The unique identifier of the coupon.\n- `code`: The code associated with the coupon.\n- `startDate`: The start date of the coupon.\n- `endDate`: The end date of the coupon.\n- `discount`: The discount amount of the coupon.\n- `user`: The user associated with the coupon.\n- `createdAt`: The creation date of the coupon.\n- `updatedAt`: The last update date of the coupon.\n- `__v`: The version of the coupon.\n- `isExpired`: Indicates whether the coupon is expired or not.\n- `daysLeft`: The number of days left for the coupon to expire.\n- `id`: An alternative unique identifier for the coupon.\n    \n\nPlease note that the values for `_id`, `code`, `user`, `createdAt`, `updatedAt`, and `id` have been redacted for security purposes.\n\nExample response:\n\n```\n{\n    \"status\": \"\",\n    \"message\": \"\",\n    \"coupons\": [\n        {\n            \"_id\": \"\",\n            \"code\": \"\",\n            \"startDate\": \"\",\n            \"endDate\": \"\",\n            \"discount\": 0,\n            \"user\": \"\",\n            \"createdAt\": \"\",\n            \"updatedAt\": \"\",\n            \"__v\": 0,\n            \"isExpired\": true,\n            \"daysLeft\": \"\",\n            \"id\": \"\"\n        }\n    ]\n}\n\n ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Get By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/order/655cfc101b5bfc73ed9cf95",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"order",
+								"655cfc101b5bfc73ed9cf95"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update By ID",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NWEyOTUyM2Y2YTg2OTVmYWYyYWZlOSIsImlhdCI6MTcwMDQxNTIyMywiZXhwIjoxNzAwNjc0NDIzfQ.4St-7_LXXlpqhuj7LS8p76qfl4PdfUPkjuYfXW_7rOE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Addidas\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/brand/655b1cfebbcda4ced65f286c",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"brand",
+								"655b1cfebbcda4ced65f286c"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

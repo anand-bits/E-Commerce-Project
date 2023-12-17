@@ -13,3 +13,6 @@ categoriesRouter.delete("/:id",isLoggedIn, deleteCategoryCtrl);
 
 
  export default categoriesRouter;
+
+
+ //https://drive.google.com/file/d/1URkakEn6YVbJ11A5Pa1NrKARrYSDUL-D/view?usp=drive_link

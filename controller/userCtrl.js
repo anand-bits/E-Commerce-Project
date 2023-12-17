@@ -19,6 +19,9 @@ export const registerUserCtrl = asyncHandler(async (req, res, next) => {
         if (userExist) {
             return next(new Error("User exists with Email Id, please login with that Id"));
         }
+// Get to know the salt
+
+// Its Like third one more layer of security
 
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
