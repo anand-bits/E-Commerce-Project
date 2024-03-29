@@ -1,5 +1,5 @@
 # E-Commerce Project Backend
-
+h
 This repository contains the backend code for an E-commerce project, providing a comprehensive set of APIs to manage users, products, categories, brands, colors, reviews, orders, and coupons. The project includes user authentication with JWT tokens, payment integration with Stripe, and confirmation via webhook after applying discounts to the payment.
 
 ## Table of Contents
